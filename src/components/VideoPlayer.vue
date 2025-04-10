@@ -101,9 +101,9 @@ const initializePlayer = (options = props.options) => {
 
   // Initialize the playlist
   if (options.sources && options.sources.length > 0) {
-    player.playlist(options.sources); // Set the playlist
+    //player.playlist(options.sources); // Set the playlist
     player.playlistUi(); // Enable the playlist UI
-    player.playlist.autoadvance(0); // Enable auto-advance
+  
   } else {
     console.error("No sources available for the playlist.");
   }
@@ -129,7 +129,6 @@ const playItem = (index) => {
 const setupMediaSession = () => {
   if (!("mediaSession" in navigator)) return;
 
-  const video = videoPlayer.value;
 
   // Set media metadata
   navigator.mediaSession.metadata = new MediaMetadata({
@@ -141,35 +140,7 @@ const setupMediaSession = () => {
     ],
   });
 
-  // Media session action handlers
-  navigator.mediaSession.setActionHandler("play", () => {
-    video.play();
-  });
-
-  navigator.mediaSession.setActionHandler("pause", () => {
-    video.pause();
-  });
-
-  navigator.mediaSession.setActionHandler("seekbackward", (details) => {
-    video.currentTime = Math.max(video.currentTime - (details.seekOffset || 10), 0);
-  });
-
-  navigator.mediaSession.setActionHandler("seekforward", (details) => {
-    video.currentTime = Math.min(video.currentTime + (details.seekOffset || 10), video.duration);
-  });
-
-  navigator.mediaSession.setActionHandler("seekto", (details) => {
-    if (details.fastSeek && "fastSeek" in video) {
-      video.fastSeek(details.seekTime);
-    } else {
-      video.currentTime = details.seekTime;
-    }
-  });
-
-  navigator.mediaSession.setActionHandler("stop", () => {
-    video.pause();
-    video.currentTime = 0;
-  });
+  
 };
 </script>
 
