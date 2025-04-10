@@ -56,6 +56,7 @@ const loadFile = async (file) => {
        name: playlist.uri
      }));
     }
+    sources = sources.filter((source) => source.src.startsWith("https://"));
     videoOptions.value = {
       controls: true,
       autoplay: true,
