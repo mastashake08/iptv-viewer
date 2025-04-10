@@ -4,6 +4,7 @@ import vue from '@vitejs/plugin-vue'
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  base: '/iptv-viewer/', // Replace 'iptv-viewer' with your repository name
   plugins: [vue(), VitePWA({
     registerType: 'prompt',
     injectRegister: false,
