@@ -135,7 +135,7 @@ const setupMediaSession = () => {
     artist: "Mastashake",
     album: "IPTV Playlist",
     artwork: [
-      { src: "/favicon.svg", sizes: "96x96", type: "image/svg+xml" },
+      { src: "/iptv-viewer/favicon.svg", sizes: "96x96", type: "image/svg+xml" },
     ],
   });
 
