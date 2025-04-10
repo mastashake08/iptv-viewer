@@ -98,9 +98,9 @@ const initializePlayer = (options = props.options) => {
     //     })
     player.playlist(options.sources);
     player.playlistUi();
-    player.preroll({
-      src:"https://file-examples.com/wp-content/storage/2017/04/file_example_MP4_480_1_5MG.mp4"
-    });
+    // player.preroll({
+    //   src:"https://file-examples.com/wp-content/storage/2017/04/file_example_MP4_480_1_5MG.mp4"
+    // });
 
   });
   

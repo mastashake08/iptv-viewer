@@ -116,7 +116,7 @@ if ("launchQueue" in window) {
     :class="{ 'dragging': isDragging }"
     class="drop-zone"
   >
-    <img src="/favicon.svg" class="logo" alt="iptv-viewer logo" />
+    <img src="/iptv-viewer/favicon.svg" class="logo" alt="iptv-viewer logo" />
     <HelloWorld msg="IPTV Viewer by Mastashake" />
     <PWABadge />
 
