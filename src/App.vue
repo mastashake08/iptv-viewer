@@ -7,6 +7,7 @@ import VideoPlayer from './components/VideoPlayer.vue';
 // State
 const videoOptions = ref(null);
 const isDragging = ref(false);
+const videoUrl = ref(""); // For the text input URL
 
 // Drag-and-Drop Handlers
 const handleDragOver = (event) => {
@@ -23,11 +24,22 @@ const handleDrop = (event) => {
   isDragging.value = false;
 
   const file = event.dataTransfer.files[0];
+  loadFile(file);
+};
+
+// File Upload Handler
+const handleFileUpload = (event) => {
+  const file = event.target.files[0];
+  loadFile(file);
+};
+
+// Load File
+const loadFile = (file) => {
   if (file && (file.name.endsWith(".m3u8") || file.name.endsWith(".m3u"))) {
     const url = URL.createObjectURL(file);
     videoOptions.value = {
       controls: true,
-      autoplay: true, // Automatically play the new file
+      autoplay: true,
       preload: "auto",
       sources: [
         {
@@ -37,7 +49,26 @@ const handleDrop = (event) => {
       ],
     };
   } else {
-    alert("Please drop a valid .m3u8 or .m3u file.");
+    alert("Please upload a valid .m3u8 or .m3u file.");
+  }
+};
+
+// Load URL
+const loadUrl = () => {
+  if (videoUrl.value) {
+    videoOptions.value = {
+      controls: true,
+      autoplay: true,
+      preload: "auto",
+      sources: [
+        {
+          src: videoUrl.value,
+          type: "application/x-mpegURL",
+        },
+      ],
+    };
+  } else {
+    alert("Please enter a valid URL.");
   }
 };
 
@@ -45,22 +76,7 @@ const handleDrop = (event) => {
 if ("launchQueue" in window) {
   launchQueue.setConsumer(async (launchParams) => {
     const file = launchParams.files[0];
-    if (file && (file.name.endsWith(".m3u8") || file.name.endsWith(".m3u"))) {
-      const url = URL.createObjectURL(await file.getFile());
-      videoOptions.value = {
-        controls: true,
-        autoplay: true, // Automatically play the new file
-        preload: "auto",
-        sources: [
-          {
-            src: url,
-            type: "application/x-mpegURL",
-          },
-        ],
-      };
-    } else {
-      alert("Please open a valid .m3u8 or .m3u file.");
-    }
+    loadFile(await file.getFile());
   });
 }
 </script>
@@ -76,7 +92,24 @@ if ("launchQueue" in window) {
     <img src="/favicon.svg" class="logo" alt="iptv-viewer logo" />
     <HelloWorld msg="IPTV Viewer by Mastashake" />
     <PWABadge />
-    <p v-if="!videoOptions">Drag and drop a .m3u8 or .m3u file, or open one via the launcher.</p>
+
+    <p v-if="!videoOptions">Drag and drop a .m3u8 or .m3u file, upload one, or enter a URL to load the video.</p>
+
+    <!-- File Upload Button -->
+    <input type="file" accept=".m3u8,.m3u" @change="handleFileUpload" />
+
+    <!-- URL Input -->
+    <div>
+      <input
+        type="text"
+        v-model="videoUrl"
+        placeholder="Enter video URL"
+        class="url-input"
+      />
+      <button @click="loadUrl">Load URL</button>
+    </div>
+
+    <!-- Video Player -->
     <VideoPlayer v-if="videoOptions" :options="videoOptions" />
   </div>
 </template>
@@ -103,5 +136,14 @@ if ("launchQueue" in window) {
 }
 .drop-zone.dragging {
   background-color: #f0f8ff;
+}
+
+.url-input {
+  margin: 1em 0;
+  padding: 0.5em;
+  width: 80%;
+  max-width: 400px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
 }
 </style>
