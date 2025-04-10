@@ -7,12 +7,29 @@
       controls
       preload="auto"
     ></video>
-    <div class="vjs-playlist"></div>
+    <div class="playlist-container">
+      <input
+        type="text"
+        v-model="searchQuery"
+        placeholder="Search playlist..."
+        class="search-bar"
+      />
+      <ul class="playlist">
+        <li
+          v-for="(item, index) in filteredPlaylist"
+          :key="index"
+          @click="playItem(index)"
+          class="playlist-item"
+        >
+          {{ item.name || item.src }}
+        </li>
+      </ul>
+    </div>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted, onBeforeUnmount, watch } from "vue";
+import { ref, onMounted, onBeforeUnmount, watch, computed } from "vue";
 import videojs from "video.js";
 import "video.js/dist/video-js.css";
 import "videojs-playlist-ui";
@@ -33,7 +50,16 @@ const props = defineProps({
 
 // Refs
 const videoPlayer = ref(null);
+const searchQuery = ref("");
 let player = null;
+
+// Computed property for filtered playlist
+const filteredPlaylist = computed(() => {
+  if (!props.options.sources) return [];
+  return props.options.sources.filter((item) =>
+    (item.name || item.src).toLowerCase().includes(searchQuery.value.toLowerCase())
+  );
+});
 
 // Lifecycle hooks
 onMounted(() => {
@@ -64,8 +90,15 @@ const initializePlayer = (options = props.options) => {
   player = videojs(videoPlayer.value, options, () => {
     console.log("Video.js player is ready!");
   });
-  player.playlist(options.sources)
+  player.playlist(options.sources);
   player.playlistUi();
+};
+
+const playItem = (index) => {
+  if (player) {
+    player.playlist.currentItem(index);
+    player.play();
+  }
 };
 
 const setupMediaSession = () => {
@@ -116,5 +149,31 @@ const setupMediaSession = () => {
 </script>
 
 <style scoped>
-/* Add any custom styles for your video player here */
+.playlist-container {
+  margin-top: 1em;
+}
+
+.search-bar {
+  margin-bottom: 1em;
+  padding: 0.5em;
+  width: 100%;
+  max-width: 400px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.playlist {
+  list-style: none;
+  padding: 0;
+}
+
+.playlist-item {
+  padding: 0.5em;
+  cursor: pointer;
+  border-bottom: 1px solid #ccc;
+}
+
+.playlist-item:hover {
+  background-color: #f0f0f0;
+}
 </style>

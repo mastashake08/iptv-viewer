@@ -59,7 +59,7 @@ const loadFile = async (file) => {
     const url = URL.createObjectURL(file);
     videoOptions.value = {
       controls: true,
-      autoplay: true,
+      autoplay: false,
       preload: "auto",
       sources: sources,
     };
