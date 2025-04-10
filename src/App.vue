@@ -72,6 +72,12 @@ const loadFile = async (file) => {
 const loadUrl = () => {
   if (videoUrl.value) {
     videoOptions.value = {
+      controlBar: {
+        skipButtons: {
+          forward: 10,
+          back: 10
+        }
+      },
       controls: true,
       autoplay: true,
       preload: "auto",
