@@ -7,8 +7,9 @@
       controls
       preload="auto"
     ></video>
+    
     <div class="playlist-container">
-      <input
+      <!-- <input
         type="text"
         v-model="searchQuery"
         placeholder="Search playlist..."
@@ -23,7 +24,8 @@
         >
           {{ item.name || item.src }}
         </li>
-      </ul>
+      </ul> -->
+      <div class="vjs-playlist"></div>
     </div>
   </div>
 </template>
