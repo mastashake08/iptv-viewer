@@ -101,7 +101,7 @@ const initializePlayer = (options = props.options) => {
 
   // Initialize the playlist
   if (options.sources && options.sources.length > 0) {
-    //player.playlist(options.sources); // Set the playlist
+    player.playlist(options.sources); // Set the playlist
     player.playlistUi(); // Enable the playlist UI
   
   } else {
