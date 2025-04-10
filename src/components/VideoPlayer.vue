@@ -39,6 +39,7 @@ import "videojs-contrib-ads";
 import "videojs-contrib-ads/dist/videojs-contrib-ads.css";
 import "videojs-preroll-v2";
 import "videojs-preroll-v2/dist/videojs-preroll.css";
+import * as chromecast from "@silvermine/videojs-chromecast";
 // Props
 const props = defineProps({
   options: {
@@ -91,11 +92,16 @@ watch(
 // Methods
 const initializePlayer = (options = props.options) => {
   player = videojs(videoPlayer.value, options, () => {
+    console.log(chromecast.videojs)
+    player.chromecast({
+          appId: "2E433510",
+        })
     player.playlist(options.sources);
     player.playlistUi();
     player.preroll({
       src:"https://file-examples.com/wp-content/storage/2017/04/file_example_MP4_480_1_5MG.mp4"
     });
+
   });
   
 };

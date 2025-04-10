@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@silvermine/videojs-chromecast": "^1.5.0",
     "m3u8-parser": "^7.2.0",
     "video.js": "^8.22.0",
     "videojs-contrib-ads": "^7.5.2",
