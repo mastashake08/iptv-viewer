@@ -98,21 +98,23 @@ const initializePlayer = (options = props.options) => {
     // player.chromecast({
     //       appId: "2E433510",
     //     })
-    player.playlist(options.sources);
-    player.playlistUi();
+   
     // player.preroll({
     //   src:"https://file-examples.com/wp-content/storage/2017/04/file_example_MP4_480_1_5MG.mp4"
     // });
 
   });
-  
+  player.playlist(options.sources);
+  player.playlistUi();
 };
 
 const playItem = (index) => {
-  if (player) {
+  if (player && filteredPlaylist.value[index]) {
     const originalIndex = filteredPlaylist.value[index].originalIndex; // Get the original index
     player.playlist.currentItem(originalIndex); // Use the original index
     player.play();
+  } else {
+    console.error("Invalid index or playlist item.");
   }
 };
 
