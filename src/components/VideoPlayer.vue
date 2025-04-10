@@ -92,10 +92,10 @@ watch(
 // Methods
 const initializePlayer = (options = props.options) => {
   player = videojs(videoPlayer.value, options, () => {
-    console.log(chromecast.videojs)
-    player.chromecast({
-          appId: "2E433510",
-        })
+    // console.log(chromecast.videojs)
+    // player.chromecast({
+    //       appId: "2E433510",
+    //     })
     player.playlist(options.sources);
     player.playlistUi();
     player.preroll({
