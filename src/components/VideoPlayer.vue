@@ -94,26 +94,31 @@ watch(
 // Methods
 const initializePlayer = (options = props.options) => {
   player = videojs(videoPlayer.value, options, () => {
-    // console.log(chromecast.videojs)
-    // player.chromecast({
-    //       appId: "2E433510",
-    //     })
-   
-    // player.preroll({
-    //   src:"https://file-examples.com/wp-content/storage/2017/04/file_example_MP4_480_1_5MG.mp4"
-    // });
-
+    console.log("Video.js player is ready!");
   });
-  player.playlist(options.sources);
-  player.playlistUi();
-  player.playlist.autoadvance(0);
+
+  // Initialize the playlist
+  if (options.sources && options.sources.length > 0) {
+    player.playlist(options.sources); // Set the playlist
+    player.playlistUi(); // Enable the playlist UI
+    player.playlist.autoadvance(0); // Enable auto-advance
+  } else {
+    console.error("No sources available for the playlist.");
+  }
 };
 
 const playItem = (index) => {
   if (player && filteredPlaylist.value[index]) {
     const originalIndex = filteredPlaylist.value[index].originalIndex; // Get the original index
-    player.playlist.currentItem(originalIndex); // Use the original index
-    player.play();
+    console.log("Playing item at original index:", originalIndex);
+
+    // Ensure the playlist is set before trying to play
+    if (player.playlist()) {
+      player.playlist.currentItem(originalIndex); // Use the original index
+      player.play();
+    } else {
+      console.error("Playlist is not initialized.");
+    }
   } else {
     console.error("Invalid index or playlist item.");
   }
