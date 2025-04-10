@@ -20,11 +20,11 @@ export default defineConfig({
       description: 'A standalone IPTV PWA viewer. Load .m3u8 playlists and watch.',
       theme_color: '#000000',
       display: 'standalone',
-      scope: '/',
-      start_url: '/',
+      scope: '/iptv-viewer/',
+      start_url: '/iptv-viewer/',
       file_handlers: [
         {
-          action: "/",
+          action: "/iptv-viewer/",
           accept: {
             "application/x-mpegURL": [".m3u8", ".m3u"]
           }
