@@ -35,11 +35,8 @@ const handleFileUpload = (event) => {
   loadFile(file);
 };
 
-// Load File
-const loadFile = async (file) => {
-  if (file && (file.name.endsWith(".m3u8") || file.name.endsWith(".m3u"))) {
-    const manifest = await file.text();
-    parser.push(manifest);
+const parseManifest = (manifest) => {
+  parser.push(manifest);
     parser.end();
 
     const parsedManifest = parser.manifest;
@@ -57,6 +54,13 @@ const loadFile = async (file) => {
      }));
     }
     sources = sources.filter((source) => source.src.startsWith("https://"));
+    return sources;
+};
+// Load File
+const loadFile = async (file) => {
+  if (file && (file.name.endsWith(".m3u8") || file.name.endsWith(".m3u"))) {
+    const manifest = await file.text();
+    const sources = parseManifest(manifest);
     videoOptions.value = {
       controls: true,
       autoplay: true,
@@ -75,8 +79,10 @@ const loadFile = async (file) => {
 };
 
 // Load URL
-const loadUrl = () => {
+const loadUrl = async () => {
   if (videoUrl.value) {
+    const manifest = await fetch(videoUrl.value).then((res) => res.text());
+    const sources = parseManifest(manifest);
     videoOptions.value = {
       controlBar: {
         skipButtons: {
@@ -87,12 +93,7 @@ const loadUrl = () => {
       controls: true,
       autoplay: true,
       preload: "auto",
-      sources: [
-        {
-          src: videoUrl.value,
-          type: "application/x-mpegURL",
-        },
-      ],
+      sources: sources,
     };
   } else {
     alert("Please enter a valid URL.");
