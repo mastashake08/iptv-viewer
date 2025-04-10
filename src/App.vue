@@ -56,10 +56,15 @@ const loadFile = async (file) => {
        name: playlist.uri
      }));
     }
-    const url = URL.createObjectURL(file);
     videoOptions.value = {
       controls: true,
-      autoplay: false,
+      autoplay: true,
+      controlBar: {
+        skipButtons: {
+          forward: 10,
+          back: 10
+        }
+      },
       preload: "auto",
       sources: sources,
     };
