@@ -57,12 +57,14 @@ const videoPlayer = ref(null);
 const searchQuery = ref("");
 let player = null;
 
-// Computed property for filtered playlist
+// Computed property for filtered playlist with original indexes
 const filteredPlaylist = computed(() => {
   if (!props.options.sources) return [];
-  return props.options.sources.filter((item) =>
-    (item.name || item.src).toLowerCase().includes(searchQuery.value.toLowerCase())
-  );
+  return props.options.sources
+    .map((item, index) => ({ ...item, originalIndex: index })) // Add original index
+    .filter((item) =>
+      (item.name || item.src).toLowerCase().includes(searchQuery.value.toLowerCase())
+    );
 });
 
 // Lifecycle hooks
@@ -108,8 +110,8 @@ const initializePlayer = (options = props.options) => {
 
 const playItem = (index) => {
   if (player) {
-    
-    console.log(player.playlist.currentItem(index));
+    const originalIndex = filteredPlaylist.value[index].originalIndex; // Get the original index
+    player.playlist.currentItem(originalIndex); // Use the original index
     player.play();
   }
 };
