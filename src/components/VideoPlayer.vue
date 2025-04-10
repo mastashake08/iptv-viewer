@@ -115,7 +115,7 @@ const playItem = (index) => {
     // Ensure the playlist is set before trying to play
     if (player.playlist()) {
       player.playlist.currentItem(originalIndex); // Use the original index
-      player.play();
+      //player.play();
     } else {
       console.error("Playlist is not initialized.");
     }
