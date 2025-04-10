@@ -54,6 +54,7 @@ const parseManifest = (manifest) => {
      }));
     }
     sources = sources.filter((source) => source.src.startsWith("https://"));
+    console.log(sources);
     return sources;
 };
 // Load File
@@ -63,7 +64,7 @@ const loadFile = async (file) => {
     const sources = parseManifest(manifest);
     videoOptions.value = {
       controls: true,
-      autoplay: true,
+      autoplay: false,
       controlBar: {
         skipButtons: {
           forward: 10,
@@ -91,7 +92,7 @@ const loadUrl = async () => {
         }
       },
       controls: true,
-      autoplay: true,
+      autoplay: false,
       preload: "auto",
       sources: sources,
     };
