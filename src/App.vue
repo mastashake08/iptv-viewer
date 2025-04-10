@@ -145,6 +145,7 @@ if ("launchQueue" in window) {
 
     <!-- Video Player -->
     <VideoPlayer v-if="videoOptions" :options="videoOptions" />
+  <div class="vjs-playlist"></div>
   </div>
 </template>
 

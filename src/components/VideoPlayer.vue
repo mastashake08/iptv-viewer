@@ -25,7 +25,7 @@
           {{ item.name || item.src }}
         </li>
       </ul> -->
-      <div class="vjs-playlist"></div>
+      
     <!-- </div> -->
   </div>
 </template>
