@@ -7,6 +7,7 @@
       controls
       preload="auto"
     ></video>
+    <div class="vjs-playlist"></div>
   </div>
 </template>
 
@@ -14,6 +15,9 @@
 import { ref, onMounted, onBeforeUnmount, watch } from "vue";
 import videojs from "video.js";
 import "video.js/dist/video-js.css";
+import "videojs-playlist-ui";
+import "videojs-playlist-ui/dist/videojs-playlist-ui.css";
+import "videojs-playlist";
 
 // Props
 const props = defineProps({
@@ -60,6 +64,8 @@ const initializePlayer = (options = props.options) => {
   player = videojs(videoPlayer.value, options, () => {
     console.log("Video.js player is ready!");
   });
+  player.playlist(options.sources)
+  player.playlistUi();
 };
 
 const setupMediaSession = () => {

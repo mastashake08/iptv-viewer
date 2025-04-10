@@ -3,7 +3,9 @@ import { ref } from "vue";
 import HelloWorld from './components/HelloWorld.vue';
 import PWABadge from './components/PWABadge.vue';
 import VideoPlayer from './components/VideoPlayer.vue';
+import { Parser } from 'm3u8-parser';
 
+const parser = new Parser();
 // State
 const videoOptions = ref(null);
 const isDragging = ref(false);
@@ -34,19 +36,32 @@ const handleFileUpload = (event) => {
 };
 
 // Load File
-const loadFile = (file) => {
+const loadFile = async (file) => {
   if (file && (file.name.endsWith(".m3u8") || file.name.endsWith(".m3u"))) {
+    const manifest = await file.text();
+    parser.push(manifest);
+    parser.end();
+
+    const parsedManifest = parser.manifest;
+    console.log(parsedManifest);
+    let sources = parsedManifest.segments.map((segment) => ({
+      src: segment.uri,
+      type: "application/x-mpegURL",
+      name: segment.uri
+    }));
+   if (sources.length === 0) {
+     sources = parsedManifest.playlists.map((playlist) => ({
+       src: playlist.uri,
+       type: "application/x-mpegURL",
+       name: playlist.uri
+     }));
+    }
     const url = URL.createObjectURL(file);
     videoOptions.value = {
       controls: true,
       autoplay: true,
       preload: "auto",
-      sources: [
-        {
-          src: url,
-          type: "application/x-mpegURL",
-        },
-      ],
+      sources: sources,
     };
   } else {
     alert("Please upload a valid .m3u8 or .m3u file.");
