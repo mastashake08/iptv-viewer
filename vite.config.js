@@ -27,7 +27,15 @@ export default defineConfig({
           action: "/iptv-viewer/",
           accept: {
             "application/x-mpegURL": [".m3u8", ".m3u"]
-          }
+          },
+          "icons": [
+            {
+              "src": "/iptv-viewer/favicon.svg",
+              "sizes": "256x256",
+              "type": "image/svg+xml"
+            }
+          ],
+          "launch_type": "single-client"
         }
       ],
     },
