@@ -106,6 +106,7 @@ const initializePlayer = (options = props.options) => {
   });
   player.playlist(options.sources);
   player.playlistUi();
+  player.playlist.autoadvance(0);
 };
 
 const playItem = (index) => {
