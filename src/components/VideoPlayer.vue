@@ -35,7 +35,10 @@ import "video.js/dist/video-js.css";
 import "videojs-playlist-ui";
 import "videojs-playlist-ui/dist/videojs-playlist-ui.css";
 import "videojs-playlist";
-
+import "videojs-contrib-ads";
+import "videojs-contrib-ads/dist/videojs-contrib-ads.css";
+import "videojs-preroll-v2";
+import "videojs-preroll-v2/dist/videojs-preroll.css";
 // Props
 const props = defineProps({
   options: {
@@ -88,10 +91,13 @@ watch(
 // Methods
 const initializePlayer = (options = props.options) => {
   player = videojs(videoPlayer.value, options, () => {
-    console.log("Video.js player is ready!");
+    player.playlist(options.sources);
+    player.playlistUi();
+    player.preroll({
+      src:"https://file-examples.com/wp-content/storage/2017/04/file_example_MP4_480_1_5MG.mp4"
+    });
   });
-  player.playlist(options.sources);
-  player.playlistUi();
+  
 };
 
 const playItem = (index) => {
