@@ -90,8 +90,13 @@ const loadUrl = () => {
 // File Handler for Launcher Window
 if ("launchQueue" in window) {
   launchQueue.setConsumer(async (launchParams) => {
-    const file = launchParams.files[0];
-    loadFile(await file.getFile());
+    for (const fileHandle of launchParams.files) {
+      // Handle the file.
+      console.log(fileHandle);
+      loadFile(await fileHandle.getFile());
+    }
+  
+   
   });
 }
 </script>
