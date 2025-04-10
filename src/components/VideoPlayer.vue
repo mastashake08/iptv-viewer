@@ -108,7 +108,8 @@ const initializePlayer = (options = props.options) => {
 
 const playItem = (index) => {
   if (player) {
-    player.playlist.currentItem(index);
+    
+    console.log(player.playlist.currentItem(index));
     player.play();
   }
 };
