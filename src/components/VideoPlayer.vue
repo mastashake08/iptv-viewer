@@ -18,9 +18,10 @@
 import { ref, onMounted, onBeforeUnmount, watch } from "vue";
 import videojs from "video.js";
 import "video.js/dist/video-js.css";
+import "videojs-playlist";
 import "videojs-playlist-ui";
 import "videojs-playlist-ui/dist/videojs-playlist-ui.css";
-import "videojs-playlist";
+
 
 // Props
 const props = defineProps({
