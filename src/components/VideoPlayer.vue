@@ -8,7 +8,7 @@
       preload="auto"
     ></video>
     
-    <div class="playlist-container">
+    <!-- <div class="playlist-container"> -->
       <!-- <input
         type="text"
         v-model="searchQuery"
@@ -26,7 +26,7 @@
         </li>
       </ul> -->
       <div class="vjs-playlist"></div>
-    </div>
+    <!-- </div> -->
   </div>
 </template>
 
