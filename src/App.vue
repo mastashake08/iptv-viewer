@@ -34,7 +34,11 @@ const handleFileUpload = (event) => {
   const file = event.target.files[0];
   loadFile(file);
 };
-
+const buyPlaylist = async () => {
+  const response = await fetch("https://shaketv.jcompsolu.com/api/create-intent");
+  const data = await response.json();
+  window.open(data.url, "_blank");
+};
 const parseManifest = (manifest) => {
   parser.push(manifest);
     parser.end();
@@ -136,6 +140,7 @@ if ("launchQueue" in window) {
     ad-style="display: block"
     ad-format="auto">
   </adsense>
+    <button @click="buyPlaylist">Get over 5000 IPTV channels from around the world!</button>
     <PWABadge />
 
     <p v-if="!videoOptions">Drag and drop a .m3u8 or .m3u file, upload one, or enter a URL to load the video.</p>
