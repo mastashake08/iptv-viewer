@@ -7,7 +7,7 @@ import { Parser } from 'm3u8-parser';
 import VueAdsense from 'vue-adsense'
 
 onMounted(async () => {
-  await loadPlaylistFromAPI();
+  //await loadPlaylistFromAPI();
   let params = new URLSearchParams(document.location.search);
   console.log(params);
   let url = params.get("url"); // is the string "Jonathan"
