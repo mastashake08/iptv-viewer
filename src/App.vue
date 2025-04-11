@@ -148,7 +148,7 @@ const buildPlaylistSources = async () => {
 
     // Map streams to channels
     const sources = streams
-      .filter((stream) => stream.status === "online") // Only include online streams
+      .filter((stream) => stream.url.startsWith('https://')) // Only include online streams
       .map((stream) => {
         const channel = channels.find((ch) => ch.id === stream.channel); // Match stream with channel
         return {
