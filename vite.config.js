@@ -22,6 +22,12 @@ export default defineConfig({
       display: 'standalone',
       scope: '/iptv-viewer/',
       start_url: '/iptv-viewer/',
+      "protocol_handlers": [
+        {
+          "protocol": "shaketv",
+          "url": "/iptv-viewer?url=%s"
+        }
+      ],
       file_handlers: [
         {
           action: "/iptv-viewer/",

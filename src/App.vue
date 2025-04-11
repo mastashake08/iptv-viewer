@@ -1,10 +1,19 @@
 <script setup>
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import HelloWorld from './components/HelloWorld.vue';
 import PWABadge from './components/PWABadge.vue';
 import VideoPlayer from './components/VideoPlayer.vue';
 import { Parser } from 'm3u8-parser';
 import VueAdsense from 'vue-adsense'
+
+onMounted(() => {
+  let params = new URLSearchParams(document.location.search);
+  let url = params.get("url"); // is the string "Jonathan"
+  if (url) {
+    videoUrl.value = url;
+    loadUrl();
+  }
+});
 const parser = new Parser();
 // State
 const videoOptions = ref(null);
@@ -121,6 +130,7 @@ if ("launchQueue" in window) {
   
    
   });
+
 }
 </script>
 
