@@ -25,7 +25,7 @@ export default defineConfig({
       "protocol_handlers": [
         {
           "protocol": "web+shaketv",
-          "url": "/iptv-viewer/?url=%s"
+          "url": "/?url=%s"
         }
       ],
       file_handlers: [
