@@ -6,7 +6,7 @@ import VideoPlayer from './components/VideoPlayer.vue';
 import { Parser } from 'm3u8-parser';
 import VueAdsense from 'vue-adsense'
 
-onMounted(async () => {
+onMounted(() => {
   //await loadPlaylistFromAPI();
   let params = new URLSearchParams(document.location.search);
   console.log(params);
