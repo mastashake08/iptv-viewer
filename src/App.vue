@@ -86,7 +86,7 @@ const loadFile = async (file) => {
       controlBar: {
         skipButtons: {
           forward: 10,
-          back: 10
+          backward: 10
         }
       },
       preload: "auto",
@@ -106,7 +106,7 @@ const loadUrl = async () => {
       controlBar: {
         skipButtons: {
           forward: 10,
-          back: 10
+          backward: 10
         }
       },
       controls: true,
