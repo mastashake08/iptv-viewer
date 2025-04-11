@@ -6,7 +6,8 @@ import VideoPlayer from './components/VideoPlayer.vue';
 import { Parser } from 'm3u8-parser';
 import VueAdsense from 'vue-adsense'
 
-onMounted(() => {
+onMounted(async () => {
+  await loadPlaylistFromAPI();
   let params = new URLSearchParams(document.location.search);
   console.log(params);
   let url = params.get("url"); // is the string "Jonathan"
@@ -133,6 +134,48 @@ if ("launchQueue" in window) {
   });
 
 }
+
+const buildPlaylistSources = async () => {
+  try {
+    // Fetch channels and streams data
+    const [channelsResponse, streamsResponse] = await Promise.all([
+      fetch("https://iptv-org.github.io/api/channels.json"),
+      fetch("https://iptv-org.github.io/api/streams.json"),
+    ]);
+
+    const channels = await channelsResponse.json();
+    const streams = await streamsResponse.json();
+
+    // Map streams to channels
+    const sources = streams
+      .filter((stream) => stream.status === "online") // Only include online streams
+      .map((stream) => {
+        const channel = channels.find((ch) => ch.id === stream.channel); // Match stream with channel
+        return {
+          src: stream.url, // Stream URL
+          type: "application/x-mpegURL", // Stream type
+          name: channel ? channel.name : "Unknown Channel", // Channel name
+          poster: channel ? channel.logo : "/iptv-viewer/favicon.svg", // Channel logo or fallback image
+        };
+      });
+
+    console.log("Playlist Sources:", sources);
+    return sources;
+  } catch (error) {
+    console.error("Error building playlist sources:", error);
+    return [];
+  }
+};
+
+const loadPlaylistFromAPI = async () => {
+  const sources = await buildPlaylistSources();
+  videoOptions.value = {
+    controls: true,
+    autoplay: true,
+    preload: "auto",
+    sources: sources,
+  };
+};
 </script>
 
 <template>
