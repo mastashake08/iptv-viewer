@@ -8,6 +8,7 @@ import VueAdsense from 'vue-adsense'
 
 onMounted(() => {
   let params = new URLSearchParams(document.location.search);
+  console.log(params);
   let url = params.get("url"); // is the string "Jonathan"
   if (url) {
     videoUrl.value = url;
