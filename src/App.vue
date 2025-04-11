@@ -141,6 +141,7 @@ if ("launchQueue" in window) {
     ad-format="auto">
   </adsense>
     <button @click="buyPlaylist">Get over 5000 IPTV channels from around the world!</button>
+    <hr />
     <PWABadge />
 
     <p v-if="!videoOptions">Drag and drop a .m3u8 or .m3u file, upload one, or enter a URL to load the video.</p>
@@ -157,7 +158,6 @@ if ("launchQueue" in window) {
         class="url-input"
       />
     </div>
-    <hr />
     <button @click="loadUrl">Load URL</button>
     
 
