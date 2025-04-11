@@ -42,15 +42,19 @@ const parseManifest = (manifest) => {
     const parsedManifest = parser.manifest;
     console.log(parsedManifest);
     let sources = parsedManifest.segments.map((segment) => ({
+     sources:[{
       src: segment.uri,
       type: "application/x-mpegURL",
+     }], 
       name: segment.uri,
       poster: '/iptv-viewer/favicon.svg'
     }));
    if (sources.length === 0) {
      sources = parsedManifest.playlists.map((playlist) => ({
-       src: playlist.uri,
-       type: "application/x-mpegURL",
+      sources:[{
+        src: segment.uri,
+        type: "application/x-mpegURL",
+      }], 
        name: playlist.uri,
        poster: '/iptv-viewer/favicon.svg'
      }));
