@@ -59,8 +59,6 @@ const parseManifest = (manifest) => {
        poster: '/iptv-viewer/favicon.svg'
      }));
     }
-    sources = sources.map((source) => source.sources.filter((source) => source.src.startsWith("https://")));
-    console.log(sources);
     return sources;
 };
 // Load File
