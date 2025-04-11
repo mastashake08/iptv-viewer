@@ -68,7 +68,7 @@ const loadFile = async (file) => {
     const sources = parseManifest(manifest);
     videoOptions.value = {
       controls: true,
-      autoplay: false,
+      autoplay: true,
       controlBar: {
         skipButtons: {
           forward: 10,
@@ -96,7 +96,7 @@ const loadUrl = async () => {
         }
       },
       controls: true,
-      autoplay: false,
+      autoplay: true,
       preload: "auto",
       sources: sources,
     };
