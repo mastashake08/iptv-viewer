@@ -44,13 +44,15 @@ const parseManifest = (manifest) => {
     let sources = parsedManifest.segments.map((segment) => ({
       src: segment.uri,
       type: "application/x-mpegURL",
-      name: segment.uri
+      name: segment.uri,
+      poster: '/iptv-viewer/favicon.svg'
     }));
    if (sources.length === 0) {
      sources = parsedManifest.playlists.map((playlist) => ({
        src: playlist.uri,
        type: "application/x-mpegURL",
-       name: playlist.uri
+       name: playlist.uri,
+       poster: '/iptv-viewer/favicon.svg'
      }));
     }
     sources = sources.filter((source) => source.src.startsWith("https://"));
