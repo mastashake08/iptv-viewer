@@ -9,28 +9,19 @@
       preload="auto"
     ></video>
 
-    <!-- Search Bar -->
-    <div class="search-container">
-      <input
-        type="text"
-        v-model="searchQuery"
-        placeholder="Search playlist..."
-        class="search-bar"
-      />
-    </div>
-
     <!-- Default Playlist UI -->
     <div class="vjs-playlist"></div>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted, onBeforeUnmount, watch, computed } from "vue";
+import { ref, onMounted, onBeforeUnmount, watch } from "vue";
 import videojs from "video.js";
 import "video.js/dist/video-js.css";
 import "videojs-playlist";
 import "videojs-playlist-ui";
 import "videojs-playlist-ui/dist/videojs-playlist-ui.css";
+
 
 // Props
 const props = defineProps({
@@ -46,16 +37,7 @@ const props = defineProps({
 
 // Refs
 const videoPlayer = ref(null);
-const searchQuery = ref(""); // Search query for filtering
 let player = null;
-
-// Computed property for filtered playlist
-const filteredSources = computed(() => {
-  if (!props.options.sources) return [];
-  return props.options.sources.filter((item) =>
-    (item.name || item.src).toLowerCase().includes(searchQuery.value.toLowerCase())
-  );
-});
 
 // Lifecycle hooks
 onMounted(() => {
@@ -68,15 +50,15 @@ onBeforeUnmount(() => {
   }
 });
 
-// Watch for changes in options or search query
+// Watch for changes in options to reload the player
 watch(
-  () => [props.options, searchQuery.value],
-  () => {
+  () => props.options,
+  (newOptions) => {
     if (player) {
-      player.playlist(filteredSources.value); // Update playlist with filtered sources
+      player.dispose();
     }
-  },
-  { deep: true }
+    initializePlayer(newOptions);
+  }
 );
 
 // Methods
@@ -87,7 +69,7 @@ const initializePlayer = (options = props.options) => {
 
   // Initialize the playlist
   if (options.sources && options.sources.length > 0) {
-    player.playlist(filteredSources.value); // Set the filtered playlist
+    player.playlist(options.sources); // Set the playlist
     player.playlistUi(); // Enable the default playlist UI
   } else {
     console.error("No sources available for the playlist.");
@@ -96,20 +78,7 @@ const initializePlayer = (options = props.options) => {
 </script>
 
 <style scoped>
-/* Add styles for the search bar */
-.search-container {
-  margin: 1em 0;
-  text-align: center;
-}
-
-.search-bar {
-  padding: 0.5em;
-  width: 80%;
-  max-width: 400px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
-
+/* Add any custom styles for the default playlist UI if needed */
 .vjs-playlist {
   margin-top: 1em;
 }
