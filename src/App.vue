@@ -4,7 +4,7 @@ import HelloWorld from './components/HelloWorld.vue';
 import PWABadge from './components/PWABadge.vue';
 import VideoPlayer from './components/VideoPlayer.vue';
 import { Parser } from 'm3u8-parser';
-import VueAdsense from 'vue-adsense'
+
 
 onMounted(() => {
   let params = new URLSearchParams(document.location.search);
@@ -147,12 +147,13 @@ if ("launchQueue" in window) {
   >
     <img src="/favicon.svg" class="logo" alt="iptv-viewer logo" />
     <HelloWorld msg="IPTV Viewer by Mastashake" />
-    <adsense
-    ad-client="ca-pub-7023023584987784"
-    ad-slot="2843635239"
-    ad-style="display: block"
-    ad-format="auto">
-  </adsense>
+    <ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-7023023584987784"
+     data-ad-slot="2843635239"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+
     <button @click="buyPlaylist">Get over 5000 IPTV channels from around the world!</button>
     <hr />
     <PWABadge />
