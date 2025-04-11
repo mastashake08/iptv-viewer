@@ -4,7 +4,7 @@ import HelloWorld from './components/HelloWorld.vue';
 import PWABadge from './components/PWABadge.vue';
 import VideoPlayer from './components/VideoPlayer.vue';
 import { Parser } from 'm3u8-parser';
-
+import VueAdsense from 'vue-adsense'
 const parser = new Parser();
 // State
 const videoOptions = ref(null);
@@ -130,6 +130,12 @@ if ("launchQueue" in window) {
   >
     <img src="/favicon.svg" class="logo" alt="iptv-viewer logo" />
     <HelloWorld msg="IPTV Viewer by Mastashake" />
+    <adsense
+    ad-client="ca-pub-7023023584987784"
+    ad-slot="2843635239"
+    ad-style="display: block"
+    ad-format="auto">
+  </adsense>
     <PWABadge />
 
     <p v-if="!videoOptions">Drag and drop a .m3u8 or .m3u file, upload one, or enter a URL to load the video.</p>
