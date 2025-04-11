@@ -146,8 +146,9 @@ const buildPlaylistSources = async () => {
     const channels = await channelsResponse.json();
     const streams = await streamsResponse.json();
 
-    // Map streams to channels
+    // Map streams to channels and filter for https:// URLs
     const sources = streams
+      .filter((stream) => stream.url.startsWith("https://")) // Only include https:// URLs
       .map((stream) => {
         const channel = channels.find((ch) => ch.id === stream.channel); // Match stream with channel
         return {
@@ -158,7 +159,7 @@ const buildPlaylistSources = async () => {
         };
       });
 
-    console.log("Playlist Sources:", sources);
+    console.log("Filtered Playlist Sources:", sources);
     return sources;
   } catch (error) {
     console.error("Error building playlist sources:", error);
