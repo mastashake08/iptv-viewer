@@ -156,8 +156,10 @@ if ("launchQueue" in window) {
         placeholder="Enter video URL"
         class="url-input"
       />
-      <button @click="loadUrl">Load URL</button>
     </div>
+    <hr />
+    <button @click="loadUrl">Load URL</button>
+    
 
     <!-- Video Player -->
     <VideoPlayer v-if="videoOptions" :options="videoOptions" />
