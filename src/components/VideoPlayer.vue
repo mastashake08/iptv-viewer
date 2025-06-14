@@ -3,7 +3,7 @@
     <!-- Video.js Player -->
     <video
       ref="videoPlayer"
-      class="video-js vjs-default-skin vjs-fluid"
+      class="video-js vjs-fluid"
       :id="playerId"
       controls
       preload="auto"
