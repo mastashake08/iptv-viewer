@@ -55,6 +55,7 @@ const parseManifest = (manifest) => {
 
     const parsedManifest = parser.manifest;
     console.log(parsedManifest);
+   try {
     let sources = parsedManifest.segments.map((segment) => ({
      sources:[{
       src: segment.uri,
@@ -74,6 +75,11 @@ const parseManifest = (manifest) => {
      }));
     }
     return sources;
+   } catch (error) {
+    alert("Error parsing manifest: " + error.message);
+    return [];
+   }
+    
 };
 // Load File
 const loadFile = async (file) => {
