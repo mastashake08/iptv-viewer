@@ -61,7 +61,7 @@ const parseManifest = (manifest) => {
       type: "application/x-mpegURL",
      }], 
       name: segment.uri,
-      poster: '/iptv-viewer/favicon.svg'
+      poster: '/favicon.svg'
     }));
    if (sources.length === 0) {
      sources = parsedManifest.playlists.map((playlist) => ({
