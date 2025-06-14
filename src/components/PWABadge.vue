@@ -107,6 +107,7 @@ function close() {
 }
 .pwa-toast .message {
   margin-bottom: 8px;
+  color:black;
 }
 .pwa-toast .buttons {
   display: flex;

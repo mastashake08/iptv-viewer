@@ -8,7 +8,6 @@ import { Parser } from 'm3u8-parser';
 
 onMounted(() => {
   let params = new URLSearchParams(document.location.search);
-  console.log(params);
   let url = params.get("url"); // is the string "Jonathan"
   if (url) {
     videoUrl.value = url;
@@ -54,7 +53,7 @@ const parseManifest = (manifest) => {
     parser.end();
 
     const parsedManifest = parser.manifest;
-    console.log(parsedManifest);
+ 
    try {
     let sources = parsedManifest.segments.map((segment) => ({
      sources:[{
@@ -116,6 +115,7 @@ const loadFile = async (file) => {
       },
       preload: "auto",
       sources: sources,
+      playlist: sources,
     };
   } else {
     alert("Please upload a valid .m3u8 or .m3u file.");
@@ -140,6 +140,7 @@ const loadUrl = async () => {
       autoplay: true,
       preload: "auto",
       sources: sources,
+      playlist: sources,
     };
   } else {
     alert("Please enter a valid URL.");
@@ -149,10 +150,9 @@ const loadUrl = async () => {
 // File Handler for Launcher Window
 if ("launchQueue" in window) {
   launchQueue.setConsumer(async (launchParams) => {
-    console.log(launchParams);
+   
     for (const fileHandle of launchParams.files) {
       // Handle the file.
-      console.log(fileHandle);
       loadFile(await fileHandle.getFile());
     }
   
@@ -169,42 +169,99 @@ if ("launchQueue" in window) {
     @dragover="handleDragOver"
     @dragleave="handleDragLeave"
     @drop="handleDrop"
-    :class="{ 'dragging': isDragging }"
-    class="drop-zone"
+    :class="{ 'bg-blue-50': isDragging }"
+    class="min-h-screen flex flex-col items-center justify-center bg-gray-100 dark:bg-gray-900 transition-colors"
   >
-    <img src="/favicon.svg" class="logo" alt="iptv-viewer logo" />
-    <HelloWorld msg="IPTV Viewer by Mastashake" />
-    <ins class="adsbygoogle"
-     style="display:block"
-     data-ad-client="ca-pub-7023023584987784"
-     data-ad-slot="2843635239"
-     data-ad-format="auto"
-     data-full-width-responsive="true"></ins>
+    <div class="w-full flex flex-col items-center justify-center">
+      <img src="/favicon.svg" class="w-24 h-24 my-6" alt="iptv-viewer logo" />
+      <HelloWorld msg="IPTV Viewer by Mastashake" />
+      <ins class="adsbygoogle my-4"
+        style="display:block"
+        data-ad-client="ca-pub-7023023584987784"
+        data-ad-slot="2843635239"
+        data-ad-format="auto"
+        data-full-width-responsive="true"></ins>
 
-    <button @click="buyPlaylist">Get over 5000 IPTV channels from around the world!</button>
-    <hr />
-    <PWABadge />
+      <button class="mt-3 mb-4 px-6 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700 transition"
+        @click="buyPlaylist">
+        Get over 5000 IPTV channels from around the world!
+      </button>
+      <PWABadge class="mb-4" />
 
-    <p v-if="!videoOptions">Drag and drop a .m3u8 or .m3u file, upload one, or enter a URL to load the video.</p>
+      <p v-if="!videoOptions" class="text-gray-700 dark:text-gray-200 mb-2 text-center w-full max-w-md mx-auto">
+        Drag and drop a <code>.m3u8</code> or <code>.m3u</code> file, upload one, or enter a URL to load the video.
+      </p>
 
-    <!-- File Upload Button -->
-    <input type="file" accept=".m3u8,.m3u" @change="handleFileUpload" />
+      <div class="w-full max-w-md flex flex-col items-center gap-2 mb-4">
+        <!-- File Upload Button -->
+        <input
+          type="file"
+          accept=".m3u8,.m3u"
+          @change="handleFileUpload"
+          class="w-full block mb-2 text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 text-white"
+        />
 
-    <!-- URL Input -->
-    <div>
-      <input
-        type="text"
-        v-model="videoUrl"
-        placeholder="Enter video URL"
-        class="url-input"
-      />
+        <!-- URL Input -->
+        <div class="flex w-full gap-2">
+          <input
+            type="text"
+            v-model="videoUrl"
+            placeholder="Enter video URL"
+            class="text-white flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 text-center"
+          />
+          <button
+            @click="loadUrl"
+            class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition"
+          >
+            Load URL
+          </button>
+        </div>
+      </div>
+
+      <!-- Video Player -->
+      <div class="w-full max-w-3xl flex justify-center">
+        <VideoPlayer v-if="videoOptions" :options="videoOptions" />
+      </div>
     </div>
-    <button @click="loadUrl">Load URL</button>
-    
-
-    <!-- Video Player -->
-    <VideoPlayer v-if="videoOptions" :options="videoOptions" />
   </div>
+
+  <!-- Features and How-to Section -->
+  <section class="max-w-2xl mx-auto my-8 p-6 bg-white dark:bg-gray-800 rounded-xl shadow text-gray-800 dark:text-gray-100 text-center">
+    <h2 class="text-2xl font-bold mb-2">Features</h2>
+    <ul class="list-disc list-inside mb-4 space-y-1 text-left mx-auto max-w-md">
+      <li>Load and play <code>.m3u8</code> or <code>.m3u</code> IPTV playlists</li>
+      <li>Drag-and-drop or use file picker to open playlists</li>
+      <li>Paste playlist URLs for instant access</li>
+      <li>Responsive Video.js player with playlist navigation</li>
+      <li>Installable as a Progressive Web App (PWA)</li>
+      <li>In-app purchases for premium playlists</li>
+    </ul>
+    <h2 class="text-2xl font-bold mb-2">How to Use</h2>
+    <ol class="list-decimal list-inside space-y-1 text-left mx-auto max-w-md">
+      <li>Drag and drop your <code>.m3u8</code> or <code>.m3u</code> file onto the app, or use the file picker.</li>
+      <li>Or paste a playlist URL and click "Load URL".</li>
+      <li>Browse channels and click to play.</li>
+      <li>Use your device’s media controls for playback.</li>
+      <li>For premium playlists, use the in-app purchase option.</li>
+    </ol>
+  </section>
+
+  <!-- Footer with Socials, Patreon, and GitHub -->
+  <footer class="text-center py-6 bg-gray-50 dark:bg-gray-900 mt-8">
+    <div class="flex flex-wrap justify-center gap-4 text-lg">
+      <a href="https://x.com/mastashake08" target="_blank" rel="noopener" class="hover:underline text-blue-600 dark:text-blue-400">Twitter/X</a>
+      <span>|</span>
+      <a href="https://instagram.com/mastashake08" target="_blank" rel="noopener" class="hover:underline text-pink-600 dark:text-pink-400">Instagram</a>
+      <span>|</span>
+      <a href="https://youtube.com/c/jyroneparker" target="_blank" rel="noopener" class="hover:underline text-red-600 dark:text-red-400">YouTube</a>
+      <span>|</span>
+      <a href="https://jyroneparker.com" target="_blank" rel="noopener" class="hover:underline text-gray-700 dark:text-gray-200">Website</a>
+      <span>|</span>
+      <a href="https://patreon.com/mastashake08" target="_blank" rel="noopener" class="font-bold text-orange-600 dark:text-orange-400 hover:underline">Support on Patreon</a>
+      <span>|</span>
+      <a href="https://github.com/mastashake08/iptv-viewer" target="_blank" rel="noopener" class="hover:underline text-gray-800 dark:text-gray-300 font-semibold">GitHub Repo</a>
+    </div>
+  </footer>
 </template>
 
 <style scoped>

@@ -1,16 +1,16 @@
 <template>
-  <div>
-    <!-- Video.js Player -->
-    <video
-      ref="videoPlayer"
-      class="video-js vjs-theme-city vjs-fluid vjs-playlist-ui "
-      :id="playerId"
-      controls
-      preload="auto"
-    ></video>
-
-    <!-- Default Playlist UI -->
-    <div class="vjs-playlist"></div>
+  <div class="flex flex-col items-center w-full">
+    <div class="w-full max-w-3xl mx-auto">
+      <video
+        ref="videoPlayer"
+        :id="playerId"
+        class="video-js vjs-fluid vjs-big-play-centered vjs-theme-city w-full rounded-lg shadow-lg"
+        controls
+        playsinline
+        preload="auto"
+      ></video>
+      <div class="vjs-playlist"></div>
+    </div>
   </div>
 </template>
 
@@ -24,15 +24,7 @@ import "@bnnvara/videojs-chrome-pip/dist/videojs-chrome-pip.min.js";
 import "videojs-playlist-ui";
 import "videojs-playlist-ui/dist/videojs-playlist-ui.css";
 import '@videojs/themes/dist/city/index.css';
-// Fantasy
-import '@videojs/themes/dist/fantasy/index.css';
 
-// Forest
-import '@videojs/themes/dist/forest/index.css';
-
-// Sea
-import '@videojs/themes/dist/sea/index.css';
-// Props
 const props = defineProps({
   options: {
     type: Object,
@@ -44,11 +36,22 @@ const props = defineProps({
   },
 });
 
-// Refs
 const videoPlayer = ref(null);
 let player = null;
 
-// Lifecycle hooks
+const setupPlaylist = (options) => {
+  if (options.playlist && options.playlist.length > 0) {
+    player.playlist(options.playlist);
+    // Attach playlist UI to the correct element
+    player.playlistUi({ el: player.el().querySelector('.vjs-playlist') });
+  }
+};
+
+const initializePlayer = (options = props.options) => {
+  player = videojs(videoPlayer.value, options, () => {});
+  setupPlaylist(options);
+};
+
 onMounted(() => {
   initializePlayer();
 });
@@ -59,7 +62,6 @@ onBeforeUnmount(() => {
   }
 });
 
-// Watch for changes in options to reload the player
 watch(
   () => props.options,
   (newOptions) => {
@@ -69,35 +71,4 @@ watch(
     initializePlayer(newOptions);
   }
 );
-
-// Methods
-const initializePlayer = (options = props.options) => {
-  player = videojs(videoPlayer.value, options, () => {
-    console.log("Video.js player is ready!");
-  });
-  videojs.registerPlugin('chromePip', chromePip);
-  player.chromePip();
-  // Initialize the playlist
-  if (options.sources && options.sources.length > 0) {
-    player.playlist(options.sources); // Set the playlist
-    player.playlistUi(); // Enable the default playlist UI
-  } else {
-    console.error("No sources available for the playlist.");
-  }
-};
 </script>
-
-<style scoped>
-/* Add any custom styles for the default playlist UI if needed */
-.vjs-playlist {
-  margin-top: 1em;
-}
-
-.vjs-playlist-item {
-  cursor: pointer;
-}
-
-.vjs-playlist-item:hover {
-  background-color: #f0f0f0;
-}
-</style>
