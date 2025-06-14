@@ -70,7 +70,7 @@ const parseManifest = (manifest) => {
         type: "application/x-mpegURL",
       }], 
        name: playlist.uri,
-       poster: '/iptv-viewer/favicon.svg'
+       poster: '/favicon.svg'
      }));
     }
     return sources;
@@ -81,6 +81,8 @@ const loadFile = async (file) => {
     const manifest = await file.text();
     const sources = parseManifest(manifest);
     videoOptions.value = {
+      enableSmoothSeeking: true,
+      liveui:true,
       controls: true,
       autoplay: true,
       controlBar: {
@@ -103,6 +105,8 @@ const loadUrl = async () => {
     const manifest = await fetch(videoUrl.value).then((res) => res.text());
     const sources = parseManifest(manifest);
     videoOptions.value = {
+      enableSmoothSeeking: true,
+      liveui:true,
       controlBar: {
         skipButtons: {
           forward: 10,
