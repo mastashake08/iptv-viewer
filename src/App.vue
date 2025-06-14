@@ -58,7 +58,7 @@ const parseManifest = (manifest) => {
    try {
     let name = '';
     let sources = parsedManifest.segments.map((segment) => ({
-     name = segment.title.match(/group-title="[^"]*",(.+)/)
+     name = segment.title.match(/group-title="[^"]*",(.+)/);
       sources:[{
       src: segment.uri,
       type: "application/x-mpegURL",
@@ -68,7 +68,7 @@ const parseManifest = (manifest) => {
     }));
    if (sources.length === 0) {
      sources = parsedManifest.playlists.map((playlist) => ({
-     name = playlist.title.match(/group-title="[^"]*",(.+)/)
+     name = playlist.title.match(/group-title="[^"]*",(.+)/);
      console.log(name); 
      sources:[{
         src: segment.uri,
@@ -82,7 +82,7 @@ const parseManifest = (manifest) => {
    } catch (error) {
     let name = '';
     let sources = parsedManifest.segments.map((segment) => ({
-     name = segment.title.match(/group-title="[^"]*",(.+)/)
+     name = segment.title.match(/group-title="[^"]*",(.+)/);
      console.log(name); 
      sources:[{
       src: segment.uri,
