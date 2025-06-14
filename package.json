@@ -9,9 +9,11 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@bnnvara/videojs-chrome-pip": "^0.0.4",
     "@silvermine/videojs-chromecast": "^1.5.0",
+    "@videojs/themes": "^1.0.1",
     "m3u8-parser": "^7.2.0",
-    "video.js": "^8.22.0",
+    "video.js": "^8.23.3",
     "videojs-contrib-ads": "^7.5.2",
     "videojs-playlist": "^5.2.0",
     "videojs-playlist-ui": "^5.0.0",
