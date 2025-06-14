@@ -45,7 +45,7 @@ const handleFileUpload = (event) => {
   loadFile(file);
 };
 const buyPlaylist = async () => {
-  const response = await fetch("https://shaketv.jcompsolu.com/api/create-intent");
+  const response = await fetch("https://shaketv.jyroneparker.com/api/create-intent");
   const data = await response.json();
   window.open(data.url, "_blank");
 };
