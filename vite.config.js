@@ -20,23 +20,23 @@ export default defineConfig({
       description: 'A standalone IPTV PWA viewer. Load .m3u8 playlists and watch.',
       theme_color: '#000000',
       display: 'standalone',
-      scope: '/iptv-viewer/',
-      start_url: '/iptv-viewer/',
+      scope: '/',
+      start_url: '/',
       "protocol_handlers": [
         {
           "protocol": "web+shaketv",
-          "url": "/iptv-viewer/?url=%s/"
+          "url": "/?url=%s/"
         }
       ],
       file_handlers: [
         {
-          action: "/iptv-viewer/",
+          action: "/",
           accept: {
             "application/x-mpegURL": [".m3u8", ".m3u"]
           },
           "icons": [
             {
-              "src": "/iptv-viewer/favicon.svg",
+              "src": "/favicon.svg",
               "sizes": "256x256",
               "type": "image/svg+xml"
             }
