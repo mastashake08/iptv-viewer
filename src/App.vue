@@ -56,8 +56,9 @@ const parseManifest = (manifest) => {
     const parsedManifest = parser.manifest;
     console.log(parsedManifest);
    try {
+    let name = '';
     let sources = parsedManifest.segments.map((segment) => ({
-     let name = segment.title.match(/group-title="[^"]*",(.+)/)
+     name = segment.title.match(/group-title="[^"]*",(.+)/)
       sources:[{
       src: segment.uri,
       type: "application/x-mpegURL",
@@ -79,8 +80,9 @@ const parseManifest = (manifest) => {
     }
     return sources;
    } catch (error) {
+    let name = '';
     let sources = parsedManifest.segments.map((segment) => ({
-     let name = segment.title.match(/group-title="[^"]*",(.+)/)
+     name = segment.title.match(/group-title="[^"]*",(.+)/)
      console.log(name); 
      sources:[{
       src: segment.uri,
