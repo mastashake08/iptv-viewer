@@ -56,50 +56,41 @@ const parseManifest = (manifest) => {
     const parsedManifest = parser.manifest;
     console.log(parsedManifest);
    try {
-    let name = '';
     let sources = parsedManifest.segments.map((segment) => ({
-     name = segment.title.match(/group-title="[^"]*",(.+)/);
-      sources:[{
+     sources:[{
       src: segment.uri,
       type: "application/x-mpegURL",
      }], 
-      name: name[1] ?? null,
+      name: segment.title.match(/group-title="[^"]*",(.+)/)[1] ?? null,
       poster: '/favicon.svg'
     }));
    if (sources.length === 0) {
      sources = parsedManifest.playlists.map((playlist) => ({
-     name = playlist.title.match(/group-title="[^"]*",(.+)/);
-     console.log(name); 
-     sources:[{
+      sources:[{
         src: segment.uri,
         type: "application/x-mpegURL",
       }], 
-       name: name[1] ?? null,
+       name: playlist.title.match(/group-title="[^"]*",(.+)/)[1] ?? null,
        poster: '/favicon.svg'
      }));
     }
     return sources;
    } catch (error) {
-    let name = '';
     let sources = parsedManifest.segments.map((segment) => ({
-     name = segment.title.match(/group-title="[^"]*",(.+)/);
-     console.log(name); 
      sources:[{
       src: segment.uri,
       type: "application/x-mpegURL",
      }], 
-      name: name ?? null,
+      name: segment.title.match(/group-title="[^"]*",(.+)/) ?? null,
       poster: '/favicon.svg'
     }));
    if (sources.length === 0) {
      sources = parsedManifest.playlists.map((playlist) => ({
-      name = playlist.title.match(/group-title="[^"]*",(.+)/);
-      console.log(name);
       sources:[{
         src: segment.uri,
         type: "application/x-mpegURL",
       }], 
-       name: name ?? null,
+       name: playlist.title.match(/group-title="[^"]*",(.+)/) ?? null,
        poster: '/favicon.svg'
      }));
     }
