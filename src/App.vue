@@ -76,8 +76,25 @@ const parseManifest = (manifest) => {
     }
     return sources;
    } catch (error) {
-    alert("Error parsing manifest: " + error.message);
-    return [];
+    let sources = parsedManifest.segments.map((segment) => ({
+     sources:[{
+      src: segment.uri,
+      type: "application/x-mpegURL",
+     }], 
+      name: segment.title.match(/group-title="[^"]*",(.+)/) ?? null,
+      poster: '/favicon.svg'
+    }));
+   if (sources.length === 0) {
+     sources = parsedManifest.playlists.map((playlist) => ({
+      sources:[{
+        src: segment.uri,
+        type: "application/x-mpegURL",
+      }], 
+       name: playlist.title.match(/group-title="[^"]*",(.+)/) ?? null,
+       poster: '/favicon.svg'
+     }));
+    }
+    return sources;
    }
     
 };
