@@ -60,7 +60,7 @@ const parseManifest = (manifest) => {
       src: segment.uri,
       type: "application/x-mpegURL",
      }], 
-      name: segment.title.match(/group-title="([^"]+)"/) ? match[1] : null,
+      name: segment.title.match(/group-title="([^"]+)"/) ?? null,
       poster: '/favicon.svg'
     }));
    if (sources.length === 0) {
@@ -69,7 +69,7 @@ const parseManifest = (manifest) => {
         src: segment.uri,
         type: "application/x-mpegURL",
       }], 
-       name: playlist.title.match(/group-title="([^"]+)"/) ? match[1] : null,
+       name: playlist.title.match(/group-title="([^"]+)"/) ?? null,
        poster: '/favicon.svg'
      }));
     }
