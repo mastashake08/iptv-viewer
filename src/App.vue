@@ -185,6 +185,50 @@ const addToPlaylist = async () => {
   newChannelUrl.value = "";
 };
 
+const sharePlaylist = async () => {
+  const shareData = {
+    title: 'IPTV Viewer Playlist',
+    text: 'Check out this IPTV playlist I\'m watching!',
+    url: window.location.href
+  };
+
+  // Try Web Share API first (mobile and some desktop browsers)
+  if (navigator.share) {
+    try {
+      await navigator.share(shareData);
+      return;
+    } catch (err) {
+      console.log('Share cancelled or failed:', err);
+    }
+  }
+  
+  // Fallback: Copy link to clipboard
+  try {
+    await navigator.clipboard.writeText(window.location.href);
+    alert('Link copied to clipboard! Share it on your favorite platform.');
+  } catch (err) {
+    // Final fallback: show the URL
+    prompt('Share this link:', window.location.href);
+  }
+};
+
+const shareToTwitter = () => {
+  const text = encodeURIComponent('Check out this IPTV playlist I\'m watching!');
+  const url = encodeURIComponent(window.location.href);
+  window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, '_blank');
+};
+
+const shareToFacebook = () => {
+  const url = encodeURIComponent(window.location.href);
+  window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}`, '_blank');
+};
+
+const shareToWhatsApp = () => {
+  const text = encodeURIComponent('Check out this IPTV playlist I\'m watching!');
+  const url = encodeURIComponent(window.location.href);
+  window.open(`https://wa.me/?text=${text}%20${url}`, '_blank');
+};
+
 const parseManifest = (manifest) => {
   parser.push(manifest);
     parser.end();
@@ -331,6 +375,33 @@ if ("launchQueue" in window) {
         @click="savePlaylist">
         💾 Save Playlist
       </button>
+      
+      <div v-if="videoOptions" class="mb-4 flex gap-2 flex-wrap justify-center">
+        <button 
+          class="px-4 py-2 bg-blue-500 text-white rounded-lg shadow hover:bg-blue-600 transition"
+          @click="sharePlaylist"
+          title="Share via Web Share or copy link">
+          🔗 Share
+        </button>
+        <button 
+          class="px-4 py-2 bg-sky-500 text-white rounded-lg shadow hover:bg-sky-600 transition"
+          @click="shareToTwitter"
+          title="Share on Twitter/X">
+          𝕏 Twitter
+        </button>
+        <button 
+          class="px-4 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700 transition"
+          @click="shareToFacebook"
+          title="Share on Facebook">
+          📘 Facebook
+        </button>
+        <button 
+          class="px-4 py-2 bg-green-500 text-white rounded-lg shadow hover:bg-green-600 transition"
+          @click="shareToWhatsApp"
+          title="Share on WhatsApp">
+          💬 WhatsApp
+        </button>
+      </div>
       
       <PWABadge class="mb-4" />
 
