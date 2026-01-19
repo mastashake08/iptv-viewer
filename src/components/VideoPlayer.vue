@@ -19,17 +19,12 @@ import { ref, onMounted, onBeforeUnmount, watch } from "vue";
 import videojs from "video.js";
 import "video.js/dist/video-js.css";
 import "videojs-playlist";
-import chromePip from '@bnnvara/videojs-chrome-pip';
-import "@bnnvara/videojs-chrome-pip/dist/videojs-chrome-pip.min.js";
 import "videojs-playlist-ui";
 import "videojs-playlist-ui/dist/videojs-playlist-ui.css";
 import '@videojs/themes/dist/city/index.css';
 // Fantasy
 import '@videojs/themes/dist/fantasy/index.css';
 
-
-// Register the Chrome PiP plugin
-videojs.registerPlugin('chromePip', chromePip);
 
 const props = defineProps({
   options: {
@@ -75,8 +70,7 @@ const setupPlaylist = (options) => {
 
 const initializePlayer = (options = props.options) => {
   player = videojs(videoPlayer.value, options, () => {
-    // Initialize Chrome PiP plugin
-    player.chromePip();
+
   });
   setupPlaylist(options);
 };
