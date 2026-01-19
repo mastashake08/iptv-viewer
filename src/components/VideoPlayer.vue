@@ -47,6 +47,26 @@ const setupPlaylist = (options) => {
     player.playlist(options.playlist);
     // Attach playlist UI to the correct element
     player.playlistUi({ el: player.el().querySelector('.vjs-playlist') });
+    
+    // Update title metadata when playlist item changes
+    player.on('playlistitem', () => {
+      const currentItem = player.playlist()[player.playlist.currentItem()];
+      if (currentItem && currentItem.name) {
+        // Update document title
+        document.title = `${currentItem.name} - IPTV Viewer`;
+        
+        // Update player metadata for Media Session API
+        if ('mediaSession' in navigator) {
+          navigator.mediaSession.metadata = new MediaMetadata({
+            title: currentItem.name,
+            artist: 'IPTV Viewer',
+            artwork: currentItem.poster ? [
+              { src: currentItem.poster, sizes: '256x256', type: 'image/svg+xml' }
+            ] : []
+          });
+        }
+      }
+    });
   }
 };
 
