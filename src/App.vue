@@ -19,6 +19,8 @@ const parser = new Parser();
 const videoOptions = ref(null);
 const isDragging = ref(false);
 const videoUrl = ref(""); // For the text input URL
+const newChannelName = ref("");
+const newChannelUrl = ref("");
 
 // Drag-and-Drop Handlers
 const handleDragOver = (event) => {
@@ -48,6 +50,85 @@ const buyPlaylist = async () => {
   const data = await response.json();
   window.open(data.url, "_blank");
 };
+
+const savePlaylist = () => {
+  if (!videoOptions.value || !videoOptions.value.playlist) {
+    alert("No playlist loaded to save.");
+    return;
+  }
+
+  // Generate M3U8 format
+  let m3u8Content = "#EXTM3U\n";
+  
+  videoOptions.value.playlist.forEach((item) => {
+    const duration = -1; // Unknown duration for live streams
+    const title = item.name || "Untitled";
+    const url = item.sources[0].src;
+    
+    m3u8Content += `#EXTINF:${duration},${title}\n`;
+    m3u8Content += `${url}\n`;
+  });
+
+  // Create blob and download
+  const blob = new Blob([m3u8Content], { type: "application/x-mpegURL" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = "playlist.m3u8";
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+};
+
+const addToPlaylist = () => {
+  if (!newChannelName.value || !newChannelUrl.value) {
+    alert("Please enter both channel name and URL.");
+    return;
+  }
+
+  const newChannel = {
+    sources: [{
+      src: newChannelUrl.value,
+      type: "application/x-mpegURL",
+    }],
+    name: newChannelName.value,
+    poster: '/favicon.svg'
+  };
+
+  // If no playlist exists, create a new one
+  if (!videoOptions.value) {
+    videoOptions.value = {
+      enableSmoothSeeking: true,
+      enableDocumentPictureInPicture: true,
+      liveui: true,
+      controls: true,
+      autoplay: true,
+      controlBar: {
+        skipButtons: {
+          forward: 10,
+          backward: 10
+        }
+      },
+      preload: "auto",
+      sources: [newChannel.sources[0]],
+      playlist: [newChannel],
+    };
+  } else {
+    // Add to existing playlist
+    const updatedPlaylist = [...videoOptions.value.playlist, newChannel];
+    videoOptions.value = {
+      ...videoOptions.value,
+      playlist: updatedPlaylist,
+      sources: updatedPlaylist[0].sources,
+    };
+  }
+
+  // Clear form
+  newChannelName.value = "";
+  newChannelUrl.value = "";
+};
+
 const parseManifest = (manifest) => {
   parser.push(manifest);
     parser.end();
@@ -188,6 +269,13 @@ if ("launchQueue" in window) {
         @click="buyPlaylist">
         Get over 5000 IPTV channels from around the world!
       </button>
+      
+      <button v-if="videoOptions" 
+        class="mb-4 px-6 py-2 bg-green-600 text-white rounded-lg shadow hover:bg-green-700 transition"
+        @click="savePlaylist">
+        💾 Save Playlist
+      </button>
+      
       <PWABadge class="mb-4" />
 
       <p v-if="!videoOptions" class="text-gray-700 dark:text-gray-200 mb-2 text-center w-full max-w-md mx-auto">
@@ -217,6 +305,35 @@ if ("launchQueue" in window) {
           >
             Load URL
           </button>
+        </div>
+        
+        <!-- Add to Playlist Section -->
+        <div class="w-full border-t border-gray-300 dark:border-gray-700 pt-4 mt-2">
+          <p class="text-gray-700 dark:text-gray-200 text-sm mb-2 text-center font-semibold">
+            Add Channel to Playlist
+          </p>
+          <div class="flex flex-col gap-2">
+            <input
+              type="text"
+              v-model="newChannelName"
+              placeholder="Channel name (e.g., CNN)"
+              class="text-white w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400 text-center"
+            />
+            <div class="flex gap-2">
+              <input
+                type="text"
+                v-model="newChannelUrl"
+                placeholder="Stream URL"
+                class="text-white flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400 text-center"
+              />
+              <button
+                @click="addToPlaylist"
+                class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition whitespace-nowrap"
+              >
+                ➕ Add
+              </button>
+            </div>
+          </div>
         </div>
       </div>
 
