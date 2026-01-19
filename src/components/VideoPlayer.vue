@@ -25,6 +25,9 @@ import "videojs-playlist-ui";
 import "videojs-playlist-ui/dist/videojs-playlist-ui.css";
 import '@videojs/themes/dist/city/index.css';
 
+// Register the Chrome PiP plugin
+videojs.registerPlugin('chromePip', chromePip);
+
 const props = defineProps({
   options: {
     type: Object,
@@ -48,7 +51,10 @@ const setupPlaylist = (options) => {
 };
 
 const initializePlayer = (options = props.options) => {
-  player = videojs(videoPlayer.value, options, () => {});
+  player = videojs(videoPlayer.value, options, () => {
+    // Initialize Chrome PiP plugin
+    player.chromePip();
+  });
   setupPlaylist(options);
 };
 
