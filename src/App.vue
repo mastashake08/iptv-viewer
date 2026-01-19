@@ -57,7 +57,7 @@ const savePlaylist = () => {
     return;
   }
 
-  // Generate M3U8 format
+  // Generate M3U8 format matching the parser's expected format
   let m3u8Content = "#EXTM3U\n";
   
   videoOptions.value.playlist.forEach((item) => {
@@ -65,7 +65,9 @@ const savePlaylist = () => {
     const title = item.name || "Untitled";
     const url = item.sources[0].src;
     
-    m3u8Content += `#EXTINF:${duration},${title}\n`;
+    // Format: #EXTINF:duration,group-title="category",Channel Name
+    // This matches what the parser expects
+    m3u8Content += `#EXTINF:${duration} group-title="IPTV",${title}\n`;
     m3u8Content += `${url}\n`;
   });
 
@@ -81,9 +83,63 @@ const savePlaylist = () => {
   URL.revokeObjectURL(url);
 };
 
-const addToPlaylist = () => {
-  if (!newChannelName.value || !newChannelUrl.value) {
-    alert("Please enter both channel name and URL.");
+const addToPlaylist = async () => {
+  if (!newChannelUrl.value) {
+    alert("Please enter a stream URL.");
+    return;
+  }
+
+  try {
+    // Try to fetch and parse as a playlist first
+    const response = await fetch(newChannelUrl.value);
+    const content = await response.text();
+    
+    // Check if it's a playlist by looking for M3U markers
+    if (content.includes('#EXTM3U') || content.includes('#EXTINF')) {
+      // It's a playlist, parse it
+      const sources = parseManifest(content);
+      
+      if (sources.length > 0) {
+        // If no playlist exists, create a new one with parsed sources
+        if (!videoOptions.value) {
+          videoOptions.value = {
+            enableSmoothSeeking: true,
+            enableDocumentPictureInPicture: true,
+            liveui: true,
+            controls: true,
+            autoplay: true,
+            controlBar: {
+              skipButtons: {
+                forward: 10,
+                backward: 10
+              }
+            },
+            preload: "auto",
+            sources: sources[0].sources,
+            playlist: sources,
+          };
+        } else {
+          // Merge with existing playlist
+          const updatedPlaylist = [...videoOptions.value.playlist, ...sources];
+          videoOptions.value = {
+            ...videoOptions.value,
+            playlist: updatedPlaylist,
+            sources: updatedPlaylist[0].sources,
+          };
+        }
+        
+        newChannelUrl.value = "";
+        newChannelName.value = "";
+        return;
+      }
+    }
+  } catch (error) {
+    console.log("Not a playlist URL, treating as single stream:", error);
+  }
+
+  // If not a playlist or parsing failed, treat as single stream
+  if (!newChannelName.value) {
+    alert("Please enter a channel name for this stream.");
     return;
   }
 
