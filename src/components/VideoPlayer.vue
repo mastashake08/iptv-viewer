@@ -4,7 +4,7 @@
       <video
         ref="videoPlayer"
         :id="playerId"
-        class="video-js vjs-fluid vjs-big-play-centered vjs-theme-city w-full rounded-lg shadow-lg"
+        class="video-js vjs-fluid vjs-big-play-centered vjs-theme-fantasy w-full rounded-lg shadow-lg"
         controls
         playsinline
         preload="auto"
@@ -24,6 +24,9 @@ import "@bnnvara/videojs-chrome-pip/dist/videojs-chrome-pip.min.js";
 import "videojs-playlist-ui";
 import "videojs-playlist-ui/dist/videojs-playlist-ui.css";
 import '@videojs/themes/dist/city/index.css';
+// Fantasy
+import '@videojs/themes/dist/fantasy/index.css';
+
 
 // Register the Chrome PiP plugin
 videojs.registerPlugin('chromePip', chromePip);
