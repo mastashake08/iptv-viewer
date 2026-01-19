@@ -104,6 +104,7 @@ const loadFile = async (file) => {
     const sources = parseManifest(manifest);
     videoOptions.value = {
       enableSmoothSeeking: true,
+      enableDocumentPictureInPicture: true,
       liveui:true,
       controls: true,
       autoplay: true,
@@ -129,6 +130,7 @@ const loadUrl = async () => {
     const sources = parseManifest(manifest);
     videoOptions.value = {
       enableSmoothSeeking: true,
+      enableDocumentPictureInPicture: true,
       liveui:true,
       controlBar: {
         skipButtons: {
