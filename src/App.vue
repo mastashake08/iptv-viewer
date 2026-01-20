@@ -6,6 +6,7 @@ import VideoPlayer from './components/VideoPlayer.vue';
 import EPGDisplay from './components/EPGDisplay.vue';
 import { Parser } from 'm3u8-parser';
 import { parseM3U8WithEPG, extractEPGUrl } from './utils/m3u8Parser.js';
+import { proxyUrl, proxyFetch } from './utils/httpProxy.js';
 
 
 onMounted(() => {
@@ -105,7 +106,7 @@ const addToPlaylist = async () => {
 
   try {
     // Try to fetch and parse as a playlist first
-    const response = await fetch(newChannelUrl.value);
+    const response = await proxyFetch(newChannelUrl.value);
     const content = await response.text();
     
     // Check if it's a playlist by looking for M3U markers
@@ -164,7 +165,7 @@ const addToPlaylist = async () => {
 
   const newChannel = {
     sources: [{
-      src: newChannelUrl.value,
+      src: proxyUrl(newChannelUrl.value), // Proxy HTTP URLs
       type: "application/x-mpegURL",
     }],
     name: newChannelName.value,
@@ -261,7 +262,14 @@ const parseManifest = (manifest) => {
   // If enhanced parser returns results, use them
   if (sources.length > 0) {
     console.log('Parsed channels with EPG metadata:', sources);
-    return sources;
+    // Proxy HTTP URLs in sources
+    return sources.map(source => ({
+      ...source,
+      sources: source.sources.map(s => ({
+        ...s,
+        src: proxyUrl(s.src)
+      }))
+    }));
   }
   
   // Fallback to old parser if enhanced parser fails
@@ -273,7 +281,7 @@ const parseManifest = (manifest) => {
   try {
     let fallbackSources = parsedManifest.segments.map((segment) => ({
       sources:[{
-        src: segment.uri,
+        src: proxyUrl(segment.uri), // Proxy HTTP URLs
         type: "application/x-mpegURL",
       }], 
       name: segment.title?.match(/group-title="[^"]*",(.+)/)?.[1] ?? null,
@@ -283,7 +291,7 @@ const parseManifest = (manifest) => {
     if (fallbackSources.length === 0) {
       fallbackSources = parsedManifest.playlists.map((playlist) => ({
         sources:[{
-          src: playlist.uri,
+          src: proxyUrl(playlist.uri), // Proxy HTTP URLs
           type: "application/x-mpegURL",
         }], 
         name: playlist.title?.match(/group-title="[^"]*",(.+)/)?.[1] ?? null,
@@ -319,7 +327,7 @@ const loadFile = async (file) => {
       playlist: sources,
     };
   } else {
-    alert("Please upload a valid .m3u8 or .m3u file.");
+    alert("Please upload a proxyFalid .m3u8 or .m3u file.");
   }
 };
 
