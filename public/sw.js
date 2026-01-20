@@ -3,8 +3,19 @@
 
 const PROXY_API = 'https://shaketv.jyroneparker.com/api/proxy';
 
+// Precache manifest will be injected here by Workbox
+const manifest = self.__WB_MANIFEST || [];
+
 self.addEventListener('install', (event) => {
   console.log('[SW] Installing service worker with HTTP proxy');
+  
+  // Precache static assets
+  event.waitUntil(
+    caches.open('static-v1').then(cache => {
+      return cache.addAll(manifest.map(entry => entry.url || entry));
+    })
+  );
+  
   self.skipWaiting();
 });
 

@@ -161,7 +161,7 @@ watch(
     initializePlayer(newOptions);
   }
 );
-</script></script>
+</script>
 
 <style scoped>
 /* Mobile-friendly scrollable playlist */
