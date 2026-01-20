@@ -12,6 +12,7 @@ export const extractTVGAttributes = (extinfLine) => {
     tvgId: null,
     tvgName: null,
     tvgLogo: null,
+    tvgLanguage: null,
     groupTitle: null,
     channelName: null
   };
@@ -34,6 +35,12 @@ export const extractTVGAttributes = (extinfLine) => {
   const tvgLogoMatch = extinfLine.match(/tvg-logo="([^"]*)"/i);
   if (tvgLogoMatch) {
     attributes.tvgLogo = tvgLogoMatch[1];
+  }
+
+  // Extract tvg-language
+  const tvgLanguageMatch = extinfLine.match(/tvg-language="([^"]*)"/i);
+  if (tvgLanguageMatch) {
+    attributes.tvgLanguage = tvgLanguageMatch[1];
   }
 
   // Extract group-title
@@ -82,6 +89,7 @@ export const parseM3U8WithEPG = (content) => {
         tvgId: attributes.tvgId,
         tvgName: attributes.tvgName,
         tvgLogo: attributes.tvgLogo,
+        tvgLanguage: attributes.tvgLanguage,
         groupTitle: attributes.groupTitle
       });
       

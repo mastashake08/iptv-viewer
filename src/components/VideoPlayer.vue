@@ -95,6 +95,51 @@ const initializePlayer = (options = props.options) => {
     }
   });
   setupPlaylist(options);
+  
+  // Add language badges to playlist items
+  if (options.playlist) {
+    setTimeout(() => {
+      addLanguageBadges(options.playlist);
+    }, 100);
+  }
+};
+
+const addLanguageBadges = (playlist) => {
+  const playlistEl = document.querySelector('.vjs-playlist');
+  if (!playlistEl) return;
+  
+  const items = playlistEl.querySelectorAll('.vjs-playlist-item');
+  
+  items.forEach((item, index) => {
+    if (playlist[index]?.tvgLanguage) {
+      const language = playlist[index].tvgLanguage;
+      
+      // Check if badge already exists
+      if (item.querySelector('.language-badge')) return;
+      
+      // Create language badge
+      const badge = document.createElement('span');
+      badge.className = 'language-badge';
+      badge.textContent = language.toUpperCase();
+      badge.style.cssText = `
+        display: inline-block;
+        padding: 2px 6px;
+        margin-left: 8px;
+        font-size: 10px;
+        font-weight: bold;
+        background: #3b82f6;
+        color: white;
+        border-radius: 4px;
+        vertical-align: middle;
+      `;
+      
+      // Add to the title element
+      const titleEl = item.querySelector('.vjs-playlist-name');
+      if (titleEl) {
+        titleEl.appendChild(badge);
+      }
+    }
+  });
 };
 
 onMounted(() => {
