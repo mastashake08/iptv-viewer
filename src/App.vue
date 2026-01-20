@@ -22,6 +22,15 @@ const videoUrl = ref(""); // For the text input URL
 const newChannelName = ref("");
 const newChannelUrl = ref("");
 
+// Custom ad configuration
+// Add your video files to public/ads/ folder, then reference them here
+const customAdUrls = ref([
+  // Example: Uncomment and add your ad filenames
+   '/ads/ad1.mp4',
+  // '/ads/my-ad-2.mp4',
+  // '/ads/my-ad-3.mp4'
+]);
+
 // Drag-and-Drop Handlers
 const handleDragOver = (event) => {
   event.preventDefault();
@@ -466,7 +475,11 @@ if ("launchQueue" in window) {
 
       <!-- Video Player -->
       <div class="w-full max-w-3xl flex justify-center">
-        <VideoPlayer v-if="videoOptions" :options="videoOptions" />
+        <VideoPlayer 
+          v-if="videoOptions" 
+          :options="videoOptions" 
+          :customAdUrls="customAdUrls"
+        />
       </div>
     </div>
   </div>

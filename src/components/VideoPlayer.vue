@@ -26,6 +26,7 @@ import "videojs-playlist-ui/dist/videojs-playlist-ui.css";
 import '@videojs/themes/dist/city/index.css';
 // Fantasy
 import '@videojs/themes/dist/fantasy/index.css';
+import { createAdReplacementMiddleware } from '../utils/adReplacementMiddleware.js';
 
 // Register the Chrome PiP plugin
 videojs.registerPlugin('chromePip', chromePip);
@@ -39,6 +40,10 @@ const props = defineProps({
     type: String,
     default: "video-player",
   },
+  customAdUrls: {
+    type: Array,
+    default: () => []
+  }
 });
 
 const videoPlayer = ref(null);
@@ -69,6 +74,12 @@ const setupPlaylist = (options) => {
         }
       }
     });
+  // Register ad replacement middleware if custom ads are provided
+  if (props.customAdUrls && props.customAdUrls.length > 0) {
+    videojs.use('application/x-mpegURL', createAdReplacementMiddleware(props.customAdUrls));
+    videojs.use('application/vnd.apple.mpegurl', createAdReplacementMiddleware(props.customAdUrls));
+  }
+
   }
 };
 
