@@ -3,7 +3,9 @@ import { ref, onMounted } from "vue";
 import HelloWorld from './components/HelloWorld.vue';
 import PWABadge from './components/PWABadge.vue';
 import VideoPlayer from './components/VideoPlayer.vue';
+import EPGDisplay from './components/EPGDisplay.vue';
 import { Parser } from 'm3u8-parser';
+import { parseM3U8WithEPG, extractEPGUrl } from './utils/m3u8Parser.js';
 
 
 onMounted(() => {
@@ -21,6 +23,9 @@ const isDragging = ref(false);
 const videoUrl = ref(""); // For the text input URL
 const newChannelName = ref("");
 const newChannelUrl = ref("");
+// EPG State
+const currentChannel = ref(null);
+const showEPG = ref(false);
 
 // Custom ad configuration
 // Add your video files to public/ads/ folder, then reference them here
@@ -114,6 +119,11 @@ const addToPlaylist = async () => {
           videoOptions.value = {
             enableSmoothSeeking: true,
             enableDocumentPictureInPicture: true,
+            plugins: {
+              chromePip: {
+                usePiPButton: true
+              }
+            },
             liveui: true,
             controls: true,
             autoplay: true,
@@ -239,54 +249,54 @@ const shareToWhatsApp = () => {
 };
 
 const parseManifest = (manifest) => {
+  // Try to extract EPG URL from manifest header
+  const extractedEpgUrl = extractEPGUrl(manifest);
+  if (extractedEpgUrl) {
+    console.log('Found EPG URL in playlist:', extractedEpgUrl);
+  }
+  
+  // Parse with EPG metadata (tvg-id, tvg-name, tvg-logo)
+  const sources = parseM3U8WithEPG(manifest);
+  
+  // If enhanced parser returns results, use them
+  if (sources.length > 0) {
+    console.log('Parsed channels with EPG metadata:', sources);
+    return sources;
+  }
+  
+  // Fallback to old parser if enhanced parser fails
+  console.log('Enhanced parser failed, using fallback parser');
   parser.push(manifest);
-    parser.end();
-
-    const parsedManifest = parser.manifest;
- 
-   try {
-    let sources = parsedManifest.segments.map((segment) => ({
-     sources:[{
-      src: segment.uri,
-      type: "application/x-mpegURL",
-     }], 
-      name: segment.title.match(/group-title="[^"]*",(.+)/)[1] ?? null,
-      poster: '/favicon.svg'
-    }));
-   if (sources.length === 0) {
-     sources = parsedManifest.playlists.map((playlist) => ({
+  parser.end();
+  const parsedManifest = parser.manifest;
+  
+  try {
+    let fallbackSources = parsedManifest.segments.map((segment) => ({
       sources:[{
         src: segment.uri,
         type: "application/x-mpegURL",
       }], 
-       name: playlist.title.match(/group-title="[^"]*",(.+)/)[1] ?? null,
-       poster: '/favicon.svg'
-     }));
-    }
-    return sources;
-   } catch (error) {
-    let sources = parsedManifest.segments.map((segment) => ({
-     sources:[{
-      src: segment.uri,
-      type: "application/x-mpegURL",
-     }], 
-      name: segment.title.match(/group-title="[^"]*",(.+)/) ?? null,
+      name: segment.title?.match(/group-title="[^"]*",(.+)/)?.[1] ?? null,
       poster: '/favicon.svg'
     }));
-   if (sources.length === 0) {
-     sources = parsedManifest.playlists.map((playlist) => ({
-      sources:[{
-        src: segment.uri,
-        type: "application/x-mpegURL",
-      }], 
-       name: playlist.title.match(/group-title="[^"]*",(.+)/) ?? null,
-       poster: '/favicon.svg'
-     }));
-    }
-    return sources;
-   }
     
+    if (fallbackSources.length === 0) {
+      fallbackSources = parsedManifest.playlists.map((playlist) => ({
+        sources:[{
+          src: playlist.uri,
+          type: "application/x-mpegURL",
+        }], 
+        name: playlist.title?.match(/group-title="[^"]*",(.+)/)?.[1] ?? null,
+        poster: '/favicon.svg'
+      }));
+    }
+    return fallbackSources;
+  } catch (error) {
+    console.error('Parser error:', error);
+    return [];
+  }
 };
+
 // Load File
 const loadFile = async (file) => {
   if (file && (file.name.endsWith(".m3u8") || file.name.endsWith(".m3u"))) {
@@ -473,12 +483,31 @@ if ("launchQueue" in window) {
         </div>
       </div>
 
+      <!-- EPG Section - Moved to top -->
+      <div v-if="videoOptions" class="w-full max-w-3xl mb-4">
+        <!-- Toggle EPG Button -->
+        <button 
+          @click="showEPG = !showEPG"
+          class="w-full mb-4 px-6 py-3 bg-indigo-600 text-white rounded-lg shadow hover:bg-indigo-700 transition font-semibold"
+        >
+          {{ showEPG ? '📺 Hide Program Guide' : '📺 Show Program Guide' }}
+        </button>
+        
+        <!-- EPG Component -->
+        <EPGDisplay 
+          v-if="showEPG"
+          :tvg-id="currentChannel?.tvgId"
+          :channel-id="currentChannel?.name"
+        />
+      </div>
+
       <!-- Video Player -->
-      <div class="w-full max-w-3xl flex justify-center">
+      <div class="w-full max-w-3xl flex flex-col justify-center">
         <VideoPlayer 
           v-if="videoOptions" 
           :options="videoOptions" 
           :customAdUrls="customAdUrls"
+          @channel-changed="currentChannel = $event"
         />
       </div>
     </div>

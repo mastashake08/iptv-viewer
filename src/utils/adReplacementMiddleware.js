@@ -64,8 +64,11 @@ export function createAdReplacementMiddleware(customAdUrls = []) {
  */
 function replaceAdSlates(playlistContent, customAdUrls, baseUrl) {
   if (!customAdUrls || customAdUrls.length === 0) {
+    console.log('No custom ad URLs provided');
     return playlistContent;
   }
+
+  console.log(`Processing playlist with ${customAdUrls.length} custom ads:`, customAdUrls);
 
   const lines = playlistContent.split('\n');
   const modifiedLines = [];
@@ -73,6 +76,7 @@ function replaceAdSlates(playlistContent, customAdUrls, baseUrl) {
   let adBreakDuration = 0;
   let adBreakElapsed = 0;
   let customAdIndex = 0;
+  let replacementCount = 0;
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i].trim();
@@ -84,6 +88,8 @@ function replaceAdSlates(playlistContent, customAdUrls, baseUrl) {
       adBreakDuration = match ? parseFloat(match[1]) : 0;
       adBreakElapsed = 0;
       customAdIndex = 0;
+      
+      console.log(`🎬 Ad break started - Duration: ${adBreakDuration}s`);
       
       // Keep the CUE-OUT marker
       modifiedLines.push(line);
@@ -104,7 +110,9 @@ function replaceAdSlates(playlistContent, customAdUrls, baseUrl) {
 
     // Detect end of ad break
     if (line.startsWith('#EXT-X-CUE-IN')) {
+      console.log(`🎬 Ad break ended - Replaced ${replacementCount} segments`);
       inAdBreak = false;
+      replacementCount = 0;
       modifiedLines.push(line);
       continue;
     }
@@ -117,12 +125,8 @@ function replaceAdSlates(playlistContent, customAdUrls, baseUrl) {
 
     // Replace ad slate segments with custom ads
     if (inAdBreak && line && !line.startsWith('#')) {
-      // This is a segment URL (ad slate)
-      const isAdSlate = line.includes('/ad-slate/') || 
-                        line.includes('ad_slate') ||
-                        line.includes('slate');
-
-      if (isAdSlate && customAdUrls.length > 0) {
+      // This is a segment URL during an ad break
+      if (customAdUrls.length > 0) {
         // Replace with custom ad
         const customAd = customAdUrls[customAdIndex % customAdUrls.length];
         
@@ -130,7 +134,9 @@ function replaceAdSlates(playlistContent, customAdUrls, baseUrl) {
         const adUrl = resolveUrl(customAd, baseUrl);
         modifiedLines.push(adUrl);
         
+        console.log(`  ✅ Replaced segment ${customAdIndex + 1}: ${line.substring(0, 50)}... -> ${adUrl}`);
         customAdIndex++;
+        replacementCount++;
         continue;
       }
     }
@@ -139,6 +145,7 @@ function replaceAdSlates(playlistContent, customAdUrls, baseUrl) {
     modifiedLines.push(line);
   }
 
+  console.log(`✨ Playlist processing complete. Total replacements: ${replacementCount}`);
   return modifiedLines.join('\n');
 }
 
@@ -151,6 +158,13 @@ function resolveUrl(url, baseUrl) {
     return url;
   }
 
+  // If URL starts with /, it's relative to domain root
+  if (url.startsWith('/')) {
+    // For local development, this will be like /ads/ad1.mp4
+    // which is served from the public folder
+    return url;
+  }
+
   // If no base URL, return as-is
   if (!baseUrl) {
     return url;
@@ -159,6 +173,7 @@ function resolveUrl(url, baseUrl) {
   try {
     return new URL(url, baseUrl).href;
   } catch (e) {
+    console.warn('Failed to resolve URL:', url, 'against', baseUrl);
     return url;
   }
 }

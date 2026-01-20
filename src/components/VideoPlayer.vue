@@ -9,7 +9,8 @@
         playsinline
         preload="auto"
       ></video>
-      <div class="vjs-playlist"></div>
+      <!-- Scrollable playlist container -->
+      <div class="vjs-playlist max-h-96 overflow-y-auto"></div>
     </div>
   </div>
 </template>
@@ -19,8 +20,6 @@ import { ref, onMounted, onBeforeUnmount, watch } from "vue";
 import videojs from "video.js";
 import "video.js/dist/video-js.css";
 import "videojs-playlist";
-import chromePip from '@bnnvara/videojs-chrome-pip';
-import "@bnnvara/videojs-chrome-pip/dist/videojs-chrome-pip.min.js";
 import "videojs-playlist-ui";
 import "videojs-playlist-ui/dist/videojs-playlist-ui.css";
 import '@videojs/themes/dist/city/index.css';
@@ -28,8 +27,8 @@ import '@videojs/themes/dist/city/index.css';
 import '@videojs/themes/dist/fantasy/index.css';
 import { createAdReplacementMiddleware } from '../utils/adReplacementMiddleware.js';
 
-// Register the Chrome PiP plugin
-videojs.registerPlugin('chromePip', chromePip);
+// Import Chrome PiP - only import once
+import '@bnnvara/videojs-chrome-pip';
 
 const props = defineProps({
   options: {
@@ -45,6 +44,8 @@ const props = defineProps({
     default: () => []
   }
 });
+
+const emit = defineEmits(['channel-changed']);
 
 const videoPlayer = ref(null);
 let player = null;
@@ -62,6 +63,9 @@ const setupPlaylist = (options) => {
         // Update document title
         document.title = `${currentItem.name} - IPTV Viewer`;
         
+        // Emit channel change event for EPG integration
+        emit('channel-changed', currentItem);
+        
         // Update player metadata for Media Session API
         if ('mediaSession' in navigator) {
           navigator.mediaSession.metadata = new MediaMetadata({
@@ -74,12 +78,12 @@ const setupPlaylist = (options) => {
         }
       }
     });
+  }
+  
   // Register ad replacement middleware if custom ads are provided
   if (props.customAdUrls && props.customAdUrls.length > 0) {
     videojs.use('application/x-mpegURL', createAdReplacementMiddleware(props.customAdUrls));
     videojs.use('application/vnd.apple.mpegurl', createAdReplacementMiddleware(props.customAdUrls));
-  }
-
   }
 };
 
