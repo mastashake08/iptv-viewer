@@ -12,6 +12,12 @@ export default defineConfig({
     VitePWA({
     registerType: 'prompt',
     injectRegister: false,
+    strategies: 'injectManifest',
+    srcDir: 'public',
+    filename: 'sw.js',
+    injectManifest: {
+      globPatterns: ['**/*.{js,css,html,svg,png,ico}'],
+    },
 
     pwaAssets: {
       disabled: false,
@@ -48,12 +54,6 @@ export default defineConfig({
           "launch_type": "single-client"
         }
       ],
-    },
-
-    workbox: {
-      globPatterns: ['**/*.{js,css,html,svg,png,ico}'],
-      cleanupOutdatedCaches: true,
-      clientsClaim: true,
     },
 
     devOptions: {
