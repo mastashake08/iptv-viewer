@@ -51,9 +51,13 @@ self.addEventListener('fetch', (event) => {
       })
     );
   }
-  // For all other requests (https, same-origin, etc.), let them through normally
+  // For HTTPS requests, try cache first, then network
   else {
-    event.respondWith(fetch(event.request));
+    event.respondWith(
+      caches.match(event.request).then(response => {
+        return response || fetch(event.request);
+      })
+    );
   }
 });
 
