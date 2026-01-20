@@ -10,7 +10,7 @@
         preload="auto"
       ></video>
       <!-- Scrollable playlist container -->
-      <div class="vjs-playlist max-h-96 overflow-y-auto"></div>
+      <div class="vjs-playlist max-h-96 overflow-y-auto playlist-scrollable"></div>
     </div>
   </div>
 </template>
@@ -161,4 +161,18 @@ watch(
     initializePlayer(newOptions);
   }
 );
-</script>
+</script></script>
+
+<style scoped>
+/* Mobile-friendly scrollable playlist */
+.playlist-scrollable {
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  touch-action: pan-y;
+}
+
+/* Ensure smooth scrolling on all devices */
+.vjs-playlist {
+  scroll-behavior: smooth;
+}
+</style>
